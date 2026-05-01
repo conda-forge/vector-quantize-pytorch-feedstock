@@ -1,0 +1,52 @@
+context:
+  name: vector-quantize-pytorch
+  version: 1.20.9
+  python_min: 3.10.0
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/v/vector-quantize-pytorch/vector_quantize_pytorch-${{ version }}.tar.gz
+  sha256: 37effcbafe910c36d4f8691b243b9a3db182104fcab3191bf66d1741decda6ff
+
+build:
+  number: 0
+  script: ${{ PYTHON }} -m pip install . -vv
+  skip:
+    - win  # No pytorch builds exist for windows and it's a dep
+    - match(python, '<${{ python_min }}')  # upstream deps require python 3.10
+
+requirements:
+  host:
+    - pip
+    - python
+    - hatchling
+  run:
+    - python
+    - pytorch >=2.0.0
+    - einops >=0.8.0
+    - einx >=0.3.0
+
+tests:
+  # running the full unit test suite causes CI to OOM
+  # so we'll just do the import test for now
+  - python:
+      imports:
+        - vector_quantize_pytorch
+
+about:
+  license: MIT
+  license_file: LICENSE
+  summary: Simple Vector Quantization, in Pytorch
+  homepage: https://github.com/lucidrains/vector-quantizer-pytorch
+  repository: https://github.com/lucidrains/vector-quantizer-pytorch
+
+extra:
+  recipe-maintainers:
+    - iamthebot
+    - lucidrains
+    - psortos
+    - oblute
+    - mxr-conda
